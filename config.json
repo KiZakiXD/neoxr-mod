@@ -1,11 +1,11 @@
 {
-   "owner": "6285887776722",
-   "owner_name": "Wildan Izzudin",
-   "database": "data",
-   "limit": 15,
+   "owner": "0",
+   "owner_name": "Cyla Anastasya",
+   "database": "database",
+   "limit": 10,
    "ram_limit": "900mb",
-   "max_upload": 50,
-   "max_upload_free": 25,
+   "max_upload": 500,
+   "max_upload_free": 100,
    "cooldown": 1,
    "timer": 180000,
    "timeout": 1800000,
@@ -16,6 +16,7 @@
    "evaluate_chars":  ["=>", "~>", "<", ">", "$"],
    "pairing": {
       "state": true,
-      "number": 6282258694977
+      "number": 0
    }
+
 }
