@@ -12,7 +12,6 @@
 > [!CAUTION]
 > [@neoxr/wb](https://www.npmjs.com/package/@neoxr/wb) >= **5.x** version has used **TypeScript** and to use it there are slight changes. It is recommended to re-download the script.
 
-```Javascript
 // From this : ---
 const { Baileys, Converter, ... } = new (require('@neoxr/wb'))
 const client = new Baileys({
@@ -155,59 +154,6 @@ const isSpam = spam.detection(client, m, {
    banned_times: users.ban_times
 })
 
-console.log(isSpam.state)
-
-Look, i tries to spam commands against the bot, and will only respond to 1 command.
-
-<p align="center"><img align="center" width="100%" src="https://telegra.ph/file/facb21ff04392f5b65442.png" /></p>
-
-and the message gets a red label \[ SPM ] as spam message in the terminal.
-
-<p align="center"><img align="center" width="100%" src="https://telegra.ph/file/8929ba9545ecc024bc348.png" /></p>
-
-### Run on Heroku
-
-To run this bot on Heroku you only need to add 2 buildpacks and choose region EU (EUROPE) for your app :
-
-* NodeJS
-* FFMPEG [https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git](https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git)
-
-delete the `package.json`, and rename `package-for-heroku.json` to `package.json`
-
-### Run on Clovyr
-
-Clovyr is a free cloud compute with vscode based for running bot with specifications of 2 CPU and 4GB RAM (idk storage size)
-
-<p align="center"><img align="center" width="100%" src="https://telegra.ph/file/879907dac646d1cb4c017.png" /></p>
-
-with vscode it will be very easy to do recode and debugging scripts
-
-<p align="center"><img align="center" width="100%" src="https://telegra.ph/file/7e33c1e83a872f4f8d363.png" /></p>
-
-> \[!NOTE]
->
-> * `CLOVYR_APPNAME` : application name on your clovyr
->
-> Specifically for the 2 configurations below, you must carry out an inspect element using a computer to get cookies and keep-alive links
->
-> * `CLOVYR_URL` : keep-alive link
->
-> * `CLOVYR_COOKIE` : cookie from clovyr
-
-### Pairing Code
-
-Connecting account without qr scan but using pairing code.
-
-<p align="center"><img align="center" width="100%" src="https://telegra.ph/file/290abc12a3aefe23bc71b.jpg" /></p>
-
-```Javascript
-{
-   "pairing": {
-      "state": true, // "true" if you want to use the pairing code
-      "number": 62xxxx // start number with country code
-   }
-}
-```
 
 ### Installation & Run
 
@@ -225,51 +171,6 @@ $ pm2 start pm2.config.js
 
 > I don't know how to use Windows bacause I'm Linux user, so I didn't create files for installation on Windows \:v
 
-### Install & Run Via Docker
-
-$ sudo apt update -y && sudo apt install curl -y
-$ curl -fsSL https://get.docker.com | bash
-$ git clone https://github.com/neoxr/neoxr-bot
-$ cd neoxr-bot
-$ docker build -t bot .
-$ docker run -d --name neoxr bot && docker logs -f neoxr
-
-How to stop ?
-
-$ docker stop neoxr
-
-### Command Plugin
-
-**Command Plugin** is a plugin that will run using the command.
-
-exports.run = {
-   usage: ['mediafire'],
-   hidden: ['mf'],
-   use: 'link',
-   category: 'downloader',
-   async: async (m, {
-      client,
-      args,
-      text,
-      isPrefix,
-      command,
-      env,
-      Scraper,
-      Func
-   }) => {
-      try {
-         // do something
-      } catch (e) {
-         console.log(e)
-         client.reply(m.chat, Func.jsonFormat(e), m)
-      }
-   },
-   error: false,
-   limit: true,
-   restrict: true,
-   cache: true,
-   location: __filename
-}
 
 #### Up Side Options :
 
@@ -313,38 +214,13 @@ exports.run = {
 
 * `__filename` : file path for auto update
 
-**Other** :
-
-cmd.async(m, { client, args, text, isPrefix: prefix, prefixes, command, groupMetadata, participants, users, chats, groupSet, setting, isOwner, isAdmin, isBotAdmin, plugins, blockList, env, ctx, Func, Scraper })
-
 ### Event Plugin
 
 **Event Plugin** is a plugin that runs automatically without using the command.
 
-exports.run = {
-   async: async (m, {
-      client,
-      body,
-      prefixes
-   }) => {
-      try {
-         // do something
-      } catch (e) {
-         return client.reply(m.chat, Func.jsonFormat(e), m)
-      }
-   },
-   error: false,
-   cache: true,
-   location: __filename
-}
-
 * `body` : chat in the form of text or emoticons, this plugin is usually used for auto response or group protectors such as anti-links, anti-toxic etc.
 
 * `prefixes` : parameter which contains all prefixes in the form of an array, to use them parse based on index. (Example: prefixes\[0]).
-
-**Other** :
-
-event.async(m, { client, body, prefixes, groupMetadata, participants, users, chats, groupSet, setting, isOwner, isAdmin, isBotAdmin, plugins, blockList, env, ctx, Func, Scraper })
 
 Others please learn by yourself from other plugins.
 
