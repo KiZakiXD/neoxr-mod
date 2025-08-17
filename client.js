@@ -40,13 +40,16 @@ const connect = async () => {
          },
          presence: true, // 'true' if you want to see the bot typing or recording
          code: '', // Custom pairing code 8 chars (e.g: NEOXRBOT)
-         version: [2, 3000, 1023223821] // To see the latest version : https://wppconnect.io/whatsapp-versions/
+         version: [2, 3000, 1025200398] // To see the latest version : https://wppconnect.io/whatsapp-versions/
       }, {
          browser: ['Ubuntu', 'Firefox', '20.0.00'],
          shouldIgnoreJid: jid => {
             return /(newsletter|bot)/.test(jid)
          }
       })
+
+      /* Additional useless maybe */
+      let lastSavedHash = null
 
       /* starting to connect */
       client.once('connect', async res => {
@@ -88,13 +91,22 @@ const connect = async () => {
             } catch { }
          }, 60 * 1000 * 10) // clear ./temp folder every 10 mins
 
-         /* save database every 5 mins */
+         /* save database every 5 mins */         
          setInterval(async () => {
-            if (global.db) await database.save(global.db)
-         }, 60 * 1000 * 5)
+      const currentHash = JSON.stringify(global.db); 
+      if (currentHash !== lastSavedHash) {
+         try {
+            await database.save(global.db)
+            lastSavedHash = currentHash;
+            //console.log('Database saved.');
+         } catch (error) {
+            console.error('Failed to save database:', error);
+         }
+      }
+   }, 30000);
 
-         /* backup database every day at 12:00 PM (send .json file to owner) */
-         cron.schedule('0 12 * * *', async () => {
+         /* backup database every day at 07:00 PM (send .json file to owner) */
+         cron.schedule('00 07 * * *', async () => {
             if (global?.db?.setting?.autobackup) {
                await database.save(global.db)
                fs.writeFileSync(env.database + '.json', JSON.stringify(global.db, null, 3), 'utf-8')
@@ -169,6 +181,22 @@ const connect = async () => {
             var pic = fs.readFileSync('./media/image/default.jpg')
          }
 
+         /* blacklist to remove from group official*/
+         if (
+           ctx.jid === '120363422119459020@g.us' && // Group ID
+           global.db.setting.blacklist && 
+           global.db.setting.blacklist.includes(userNumber)
+         ) {
+        const message = `⚠️ @${userNumber} terdeteksi dalam daftar blacklist bot dan akan dikeluarkan dari grup.`
+          await sock.sendMessage(ctx.jid, {
+          text: message,
+          mentions: [ctx.member]
+        })
+       return await Func.delay(2000).then(() => 
+         sock.groupParticipantsUpdate(ctx.jid, [ctx.member], 'remove')
+        )
+     }
+         
          /* localonly to remove new member when the number not from indonesia */
          if (groupSet && groupSet.localonly) {
             if (global.db.users.some(v => v.jid == ctx.member) && !global.db.users.find(v => v.jid == ctx.member).whitelist && !ctx.member.startsWith('62') || !ctx.member.startsWith('62')) {
@@ -212,6 +240,13 @@ const connect = async () => {
          client.sock.updateBlockStatus(ctx.jid, 'block')
       })
 
+      /* Automatically save before death*/
+   process.on('SIGINT', async () => {
+      console.log('SIGINT received. Saving database...');
+      await database.save(global.db);
+      process.exit(0);
+   });
+
       // client.on('group.promote', ctx => console.log(ctx))
       // client.on('group.demote', ctx => console.log(ctx))
 
@@ -219,5 +254,6 @@ const connect = async () => {
       throw new Error(e)
    }
 }
+
 
 connect().catch(() => connect())
