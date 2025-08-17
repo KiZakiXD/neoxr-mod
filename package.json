@@ -1,7 +1,7 @@
 {
    "name": "neoxr-bot",
-   "version": "4.0",
-   "description": "WhatsApp Bot (Base)",
+   "version": "4.0.1",
+   "description": "WhatsApp Bot - Mod (Base)",
    "main": "index.js",
    "engines": {
       "node": ">= 20.x"
@@ -33,6 +33,8 @@
       "@session/mongo": "github:neoxr/session#mongo",
       "@session/postgres": "github:neoxr/session#postgresql",
       "cfonts": "3.1.1",
+      "g-i-s": "^2.1.7",
+      "got": "11",
       "html-entities": "^2.5.2",
       "node-cron": "^3.0.0",
       "node-gtts": "^2.0.2",
